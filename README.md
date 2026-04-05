@@ -15,20 +15,23 @@ The backend is built using **Django and Django REST Framework**, focusing on cle
 
 The backend API is deployed and accessible online.
 
-Base URL:
+* Base URL:
 
-https://finance-dashboard-backend-production-3173.up.railway.app/
+    https://finance-dashboard-backend-production-3173.up.railway.app/
 
 Example Endpoints:
 
-Dashboard Summary
-https://finance-dashboard-backend-production-3173.up.railway.app/api/dashboard/summary/
+* Dashboard Summary:
+  
+    https://finance-dashboard-backend-production-3173.up.railway.app/api/dashboard/summary/
 
-Users API
-https://finance-dashboard-backend-production-3173.up.railway.app/api/users/
+* Users API:
 
-Financial Records API
-https://finance-dashboard-backend-production-3173.up.railway.app/api/records/
+    https://finance-dashboard-backend-production-3173.up.railway.app/api/users/
+
+* Financial Records API:
+  
+    https://finance-dashboard-backend-production-3173.up.railway.app/api/records/
 
 The API can also be explored through the Django REST Framework browsable API interface.
 
