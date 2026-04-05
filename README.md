@@ -2,10 +2,35 @@
 
 ## Overview
 
-This project is a **backend API system** for managing financial records and implementing **role-based access control**.
-It is built using **Django** and **Django REST Framework** to demonstrate backend architecture, API design, database modeling, and access control logic.
 
-The system allows users with different roles to interact with financial data and provides **summary analytics for a finance dashboard**.
+This project implements a **Finance Dashboard Backend API** that manages financial records and enforces **role-based access control**.
+
+The system allows different users (Viewer, Analyst, Admin) to interact with financial records and provides **aggregated financial insights for a dashboard**.
+
+The backend is built using **Django and Django REST Framework**, focusing on clean architecture, structured APIs, and maintainable backend logic.
+
+---
+
+## Live API Deployment
+
+The backend API is deployed and accessible online.
+
+Base URL:
+
+https://finance-dashboard-backend-production-3173.up.railway.app/
+
+Example Endpoints:
+
+Dashboard Summary
+https://finance-dashboard-backend-production-3173.up.railway.app/api/dashboard/summary/
+
+Users API
+https://finance-dashboard-backend-production-3173.up.railway.app/api/users/
+
+Financial Records API
+https://finance-dashboard-backend-production-3173.up.railway.app/api/records/
+
+The API can also be explored through the Django REST Framework browsable API interface.
 
 ---
 
