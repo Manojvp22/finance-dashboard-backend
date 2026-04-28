@@ -2,8 +2,15 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from records.models import Record
 from django.db.models import Sum
+from django.shortcuts import render
+from users.permissions import RolePermission
+
+
+def frontend_dashboard(request):
+    return render(request, 'dashboard/index.html')
 
 class DashboardSummaryView(APIView):
+    permission_classes = [RolePermission]
 
     def get(self, request):
 

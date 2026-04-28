@@ -39,6 +39,16 @@ The API can also be explored through the Django REST Framework browsable API int
 
 ## Features
 
+### 0. Web Frontend
+
+* Root dashboard page at `/`
+* Secure login page backed by expiring bearer tokens
+* Summary cards for income, expenses, and net balance
+* Category totals and recent transactions
+* Financial record management from the browser
+* User and role management from the browser
+* Admin-managed user passwords
+
 ### 1. User and Role Management
 
 * Create and manage users
@@ -87,7 +97,26 @@ Provides aggregated financial insights including:
 
 ---
 
-### 5. Filtering Support
+### 5. Token Authentication
+
+The frontend and API use secure bearer tokens.
+
+* Users sign in with email and password
+* Passwords are stored as Django password hashes
+* Raw tokens are shown only once to the browser
+* The database stores only SHA-256 token hashes
+* Tokens expire after 12 hours
+* Logout revokes the active token
+
+Example authenticated request:
+
+```
+Authorization: Bearer <token>
+```
+
+---
+
+### 6. Filtering Support
 
 Records can be filtered using query parameters.
 
@@ -101,7 +130,7 @@ Example:
 
 ---
 
-### 6. Pagination
+### 7. Pagination
 
 API responses support pagination to efficiently handle large datasets.
 
@@ -115,6 +144,20 @@ Example:
 ---
 
 ## API Endpoints
+
+### Frontend
+
+```
+GET /
+```
+
+### Authentication
+
+```
+POST /api/auth/login/
+POST /api/auth/logout/
+GET  /api/auth/me/
+```
 
 ### Users
 
@@ -233,7 +276,23 @@ python manage.py migrate
 
 ---
 
-### 7. Run the Server
+### 7. Set a Password for an Existing User
+
+Existing users created before the secure login upgrade need a password.
+
+```
+python manage.py set_user_password user@example.com
+```
+
+You can also pass it directly:
+
+```
+python manage.py set_user_password user@example.com --password StrongPass123
+```
+
+---
+
+### 8. Run the Server
 
 ```
 python manage.py runserver
@@ -242,7 +301,7 @@ python manage.py runserver
 Open in browser:
 
 ```
-http://127.0.0.1:8000/api/
+http://127.0.0.1:8000/
 ```
 
 ---

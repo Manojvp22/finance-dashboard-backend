@@ -4,12 +4,12 @@ from .serializers import RecordSerializer
 from users.permissions import RolePermission
 
 class RecordViewSet(viewsets.ModelViewSet):
-    queryset = Record.objects.all()
+    queryset = Record.objects.all().order_by('-date', '-created_at')
     serializer_class = RecordSerializer
     permission_classes = [RolePermission]
 
     def get_queryset(self):
-        queryset = Record.objects.all()
+        queryset = Record.objects.all().order_by('-date', '-created_at')
 
         type_param = self.request.query_params.get('type')
         category = self.request.query_params.get('category')

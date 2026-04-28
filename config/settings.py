@@ -93,7 +93,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Use dj_database_url to configure the database from the DATABASE_URL environment variable, which is commonly used in production environments like Heroku.  If DATABASE_URL is not set, it will default to using the SQLite database defined above. This allows for easy switching between development and production databases without changing the code.      
 DATABASES = {
     "default": dj_database_url.config(
-        default=os.environ.get("DATABASE_URL")
+        default=os.environ.get("DATABASE_URL", f"sqlite:///{BASE_DIR / 'db.sqlite3'}")
     )
 }
 
