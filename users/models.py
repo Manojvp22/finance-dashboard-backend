@@ -7,7 +7,7 @@ import secrets
 
 class User(models.Model):
     ROLE_CHOICES = [
-        ('viewer', 'Viewer'),
+        ('viewer', 'User'),
         ('analyst', 'Analyst'),
         ('admin', 'Admin'),
     ]
@@ -55,3 +55,30 @@ class AccessToken(models.Model):
     @property
     def is_expired(self):
         return timezone.now() >= self.expires_at
+
+
+class PasswordResetToken(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='password_reset_tokens')
+    token_hash = models.CharField(max_length=64, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    expires_at = models.DateTimeField()
+    used_at = models.DateTimeField(null=True, blank=True)
+
+    @staticmethod
+    def hash_token(raw_token):
+        return hashlib.sha256(raw_token.encode('utf-8')).hexdigest()
+
+    @classmethod
+    def issue_for_user(cls, user):
+        cls.objects.filter(user=user, used_at__isnull=True).delete()
+        raw_token = secrets.token_urlsafe(40)
+        reset_token = cls.objects.create(
+            user=user,
+            token_hash=cls.hash_token(raw_token),
+            expires_at=timezone.now() + timedelta(minutes=30),
+        )
+        return raw_token, reset_token
+
+    @property
+    def is_active(self):
+        return self.used_at is None and timezone.now() < self.expires_at

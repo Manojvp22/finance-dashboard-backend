@@ -6,9 +6,14 @@ class Record(models.Model):
         ('income', 'Income'),
         ('expense', 'Expense'),
     ]
+    SCOPE_CHOICES = [
+        ('personal', 'Personal'),
+        ('team', 'Team'),
+    ]
 
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     type = models.CharField(max_length=10, choices=TYPE_CHOICES)
+    scope = models.CharField(max_length=12, choices=SCOPE_CHOICES, default='personal')
     category = models.CharField(max_length=100)
     date = models.DateField()
     description = models.TextField(blank=True)

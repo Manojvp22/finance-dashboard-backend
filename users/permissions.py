@@ -35,16 +35,22 @@ class RolePermission(BasePermission):
         user_role = user.role
 
         view_name = getattr(view, 'basename', None)
+        class_name = view.__class__.__name__
 
-        if view_name == 'records':
-            if request.method in ['GET']:
-                return user_role in ['analyst', 'admin']
+        if view_name == 'records' or class_name == 'RecordViewSet':
+            if request.method in ['GET', 'POST']:
+                return user_role in ['viewer', 'analyst', 'admin']
+            if request.method in ['PUT', 'PATCH']:
+                return user_role in ['viewer', 'analyst', 'admin']
             return user_role == 'admin'
 
-        if view_name == 'users':
+        if view_name == 'users' or class_name == 'UserViewSet':
             return user_role == 'admin'
 
-        if view.__class__.__name__ == 'DashboardSummaryView':
+        if view_name == 'audit-logs' or class_name == 'AuditLogViewSet':
+            return request.method == 'GET' and user_role == 'admin'
+
+        if class_name == 'DashboardSummaryView':
             return request.method == 'GET' and user_role in ['viewer', 'analyst', 'admin']
 
         return True

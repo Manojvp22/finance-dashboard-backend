@@ -43,11 +43,17 @@ The API can also be explored through the Django REST Framework browsable API int
 
 * Root dashboard page at `/`
 * Secure login page backed by expiring bearer tokens
+* Self signup for normal User accounts
+* Separate Admin, Analyst, and User workspaces
+* Light and dark mode
 * Summary cards for income, expenses, and net balance
 * Category totals and recent transactions
 * Financial record management from the browser
+* Personal and team record scopes
 * User and role management from the browser
 * Admin-managed user passwords
+* Forgot password / reset password flow
+* Audit log for create, update, delete, login, logout, and password reset events
 
 ### 1. User and Role Management
 
@@ -91,9 +97,9 @@ Provides aggregated financial insights including:
 
 | Role    | Permissions                                                  |
 | ------- | ------------------------------------------------------------ |
-| Viewer  | View dashboard summary                                       |
-| Analyst | View financial records and dashboard                         |
-| Admin   | Full access (Create, Read, Update, Delete users and records) |
+| User    | View dashboard summary and manage their own personal records |
+| Analyst | View team records, view/manage their own records, and dashboard |
+| Admin   | Full access to users, records, team data, and audit history |
 
 ---
 
@@ -107,6 +113,7 @@ The frontend and API use secure bearer tokens.
 * The database stores only SHA-256 token hashes
 * Tokens expire after 12 hours
 * Logout revokes the active token
+* Password reset tokens expire after 30 minutes
 
 Example authenticated request:
 
@@ -155,8 +162,11 @@ GET /
 
 ```
 POST /api/auth/login/
+POST /api/auth/signup/
 POST /api/auth/logout/
 GET  /api/auth/me/
+POST /api/auth/password-reset/
+POST /api/auth/password-reset/confirm/
 ```
 
 ### Users
@@ -178,6 +188,21 @@ POST   /api/records/
 PUT    /api/records/{id}/
 DELETE /api/records/{id}/
 ```
+
+Records support `scope`:
+
+```
+personal
+team
+```
+
+### Audit Logs
+
+```
+GET /api/audit-logs/
+```
+
+Only admin users can access audit logs.
 
 ---
 
@@ -289,6 +314,14 @@ You can also pass it directly:
 ```
 python manage.py set_user_password user@example.com --password StrongPass123
 ```
+
+To create or update a dashboard admin login:
+
+```
+python manage.py create_dashboard_admin admin@example.com
+```
+
+For password reset emails, configure Django email settings on the server. The API does not expose reset tokens in responses.
 
 ---
 

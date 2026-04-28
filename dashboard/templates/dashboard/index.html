@@ -21,16 +21,95 @@
                 <p class="eyebrow">Sign in</p>
                 <h1 id="loginTitle">Finance Dashboard</h1>
             </div>
+            <div class="login-role-help" aria-label="Role access overview">
+                <span><strong>Admin</strong> manages users, records, and audit logs.</span>
+                <span><strong>Analyst</strong> works with team records and own records.</span>
+                <span><strong>User</strong> sees and manages personal records only.</span>
+            </div>
             <label>
                 <span>Email</span>
                 <input id="loginEmail" type="email" autocomplete="email" required>
             </label>
             <label>
                 <span>Password</span>
-                <input id="loginPassword" type="password" autocomplete="current-password" minlength="8" required>
+                <span class="password-control">
+                    <input id="loginPassword" type="password" autocomplete="current-password" minlength="8" required>
+                    <button class="password-toggle" type="button" data-toggle-password="loginPassword" aria-label="Show password">Show</button>
+                </span>
             </label>
             <button class="primary-button" type="submit">Log in</button>
+            <div class="auth-actions">
+                <button class="link-button" id="showSignupButton" type="button">Create user account</button>
+                <button class="link-button" id="showForgotButton" type="button">Forgot password?</button>
+            </div>
             <div class="status-line" id="loginStatus" role="status">Use your dashboard account.</div>
+        </form>
+
+        <form class="login-panel hidden" id="signupForm">
+            <div class="brand login-brand">
+                <span class="brand-mark">FD</span>
+                <div>
+                    <strong>FinanceDesk</strong>
+                    <span>New personal workspace</span>
+                </div>
+            </div>
+            <div>
+                <p class="eyebrow">Sign up</p>
+                <h1>Create User Account</h1>
+            </div>
+            <div class="login-role-help">
+                New signups become <strong>User</strong> accounts. Admin can upgrade accounts to Analyst or Admin later.
+            </div>
+            <label>
+                <span>Name</span>
+                <input id="signupName" type="text" autocomplete="name" required>
+            </label>
+            <label>
+                <span>Email</span>
+                <input id="signupEmail" type="email" autocomplete="email" required>
+            </label>
+            <label>
+                <span>Password</span>
+                <span class="password-control">
+                    <input id="signupPassword" type="password" autocomplete="new-password" minlength="8" required>
+                    <button class="password-toggle" type="button" data-toggle-password="signupPassword" aria-label="Show password">Show</button>
+                </span>
+            </label>
+            <button class="primary-button" type="submit">Create account</button>
+            <button class="link-button" id="signupBackToLoginButton" type="button">Back to login</button>
+            <div class="status-line" id="signupStatus" role="status">Use at least 8 characters for password.</div>
+        </form>
+
+        <form class="login-panel hidden" id="forgotForm">
+            <div>
+                <p class="eyebrow">Password reset</p>
+                <h1>Reset access</h1>
+            </div>
+            <label>
+                <span>Email</span>
+                <input id="forgotEmail" type="email" autocomplete="email" required>
+            </label>
+            <button class="primary-button" type="submit">Send reset link</button>
+            <button class="link-button" id="backToLoginButton" type="button">Back to login</button>
+            <div class="status-line" id="forgotStatus" role="status">Enter your dashboard email.</div>
+        </form>
+
+        <form class="login-panel hidden" id="resetForm">
+            <div>
+                <p class="eyebrow">New password</p>
+                <h1>Set password</h1>
+            </div>
+            <input id="resetToken" type="hidden">
+            <label>
+                <span>New password</span>
+                <span class="password-control">
+                    <input id="resetPassword" type="password" autocomplete="new-password" minlength="8" required>
+                    <button class="password-toggle" type="button" data-toggle-password="resetPassword" aria-label="Show password">Show</button>
+                </span>
+            </label>
+            <button class="primary-button" type="submit">Update password</button>
+            <button class="link-button" id="resetBackToLoginButton" type="button">Back to login</button>
+            <div class="status-line" id="resetStatus" role="status">Use at least 8 characters.</div>
         </form>
     </section>
 
@@ -47,11 +126,13 @@
             <button class="nav-tab active" type="button" data-view="overview">Overview</button>
             <button class="nav-tab" type="button" data-view="records">Records</button>
             <button class="nav-tab" type="button" data-view="users">Users</button>
+            <button class="nav-tab" type="button" data-view="audit">Audit</button>
         </nav>
 
         <div class="session-card">
             <span id="sessionName">Signed in</span>
             <strong id="sessionRole">Role</strong>
+            <button class="ghost-button" id="themeButton" type="button">Dark mode</button>
             <button class="ghost-button" id="logoutButton" type="button">Log out</button>
         </div>
     </aside>
@@ -66,6 +147,7 @@
         </header>
 
         <div class="status-line" id="statusLine" role="status">Loading finance data...</div>
+        <div class="role-panel" id="rolePanel"></div>
 
         <section class="view active" id="overviewView" aria-labelledby="overviewTitle">
             <div class="section-heading">
@@ -125,6 +207,13 @@
                     </select>
                 </label>
                 <label>
+                    <span>Scope</span>
+                    <select id="recordScope" required>
+                        <option value="personal">Personal</option>
+                        <option value="team">Team</option>
+                    </select>
+                </label>
+                <label>
                     <span>Category</span>
                     <input id="recordCategory" type="text" required>
                 </label>
@@ -151,7 +240,9 @@
                     <thead>
                         <tr>
                             <th>Type</th>
+                            <th>Scope</th>
                             <th>Category</th>
+                            <th>Owner</th>
                             <th>Amount</th>
                             <th>Date</th>
                             <th>Description</th>
@@ -190,7 +281,7 @@
                     <select id="userRole" required>
                         <option value="admin">Admin</option>
                         <option value="analyst">Analyst</option>
-                        <option value="viewer">Viewer</option>
+                        <option value="viewer">User</option>
                     </select>
                 </label>
                 <label class="toggle-field">
@@ -204,6 +295,30 @@
             </form>
 
             <div class="user-grid" id="usersGrid"></div>
+        </section>
+
+        <section class="view" id="auditView" aria-labelledby="auditTitle">
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">History</p>
+                    <h2 id="auditTitle">Audit log</h2>
+                </div>
+            </div>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Actor</th>
+                            <th>Action</th>
+                            <th>Entity</th>
+                            <th>Details</th>
+                        </tr>
+                    </thead>
+                    <tbody id="auditTable"></tbody>
+                </table>
+            </div>
         </section>
     </main>
 
